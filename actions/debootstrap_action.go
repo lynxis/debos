@@ -176,6 +176,7 @@ func (d *DebootstrapAction) Run(context *debos.DebosContext) error {
 
 	c := debos.NewChrootCommandForContext(*context)
 	c.ChrootMethod = debos.CHROOT_METHOD_CHROOT
+	log.Println("WARNING: LYNX debootstrap ...")
 
 	return c.Run("apt clean", "/usr/bin/apt-get", "clean")
 }
