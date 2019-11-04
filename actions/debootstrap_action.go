@@ -175,6 +175,7 @@ func (d *DebootstrapAction) Run(context *debos.DebosContext) error {
 	srclist.Close()
 
 	c := debos.NewChrootCommandForContext(*context)
+	c.ChrootMethod = debos.CHROOT_METHOD_CHROOT
 
 	return c.Run("apt clean", "/usr/bin/apt-get", "clean")
 }
