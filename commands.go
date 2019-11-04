@@ -67,7 +67,7 @@ func (w *commandWrapper) flush() {
 }
 
 func NewChrootCommandForContext(context DebosContext) Command {
-	c := Command{Architecture: context.Architecture, Chroot: context.Rootdir, ChrootMethod: CHROOT_METHOD_NSPAWN}
+	c := Command{Architecture: context.Architecture, Chroot: context.Rootdir, ChrootMethod: CHROOT_METHOD_CHROOT}
 
 	if context.EnvironVars != nil {
 		for k, v := range context.EnvironVars {
