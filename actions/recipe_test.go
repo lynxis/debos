@@ -1,8 +1,8 @@
 package actions_test
 
 import (
-	"github.com/go-debos/debos"
-	"github.com/go-debos/debos/actions"
+	"github.com/lynxis/debos"
+	"github.com/lynxis/debos/actions"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"

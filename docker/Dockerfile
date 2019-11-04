@@ -21,8 +21,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Build debos
-COPY . $GOPATH/src/github.com/go-debos/debos
-WORKDIR $GOPATH/src/github.com/go-debos/debos/cmd/debos
+COPY . $GOPATH/src/github.com/lynxis/debos
+WORKDIR $GOPATH/src/github.com/lynxis/debos/cmd/debos
 RUN go get -d ./... && \
     go get -d github.com/stretchr/testify && \
     go install
@@ -38,7 +38,7 @@ ENV HOME=/tmp
 
 LABEL org.label-schema.name "debos"
 LABEL org.label-schema.description "Debian OS builder"
-LABEL org.label-schema.vcs-url = "https://github.com/go-debos/debos"
+LABEL org.label-schema.vcs-url = "https://github.com/lynxis/debos"
 LABEL org.label-schema.docker.cmd 'docker run \
   --rm \
   --interactive \

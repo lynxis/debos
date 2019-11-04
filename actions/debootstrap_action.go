@@ -46,7 +46,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/go-debos/debos"
+	"github.com/lynxis/debos"
 )
 
 type DebootstrapAction struct {

@@ -36,7 +36,7 @@ import (
 	"path"
 	"strconv"
 
-	"github.com/go-debos/debos"
+	"github.com/lynxis/debos"
 )
 
 type RawAction struct {

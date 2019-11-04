@@ -46,7 +46,7 @@ Some of the actions provided by debos to customize and produce images are:
 * unpack: unpack files from archive in the filesystem
 
 A full syntax description of all the debos actions can be found at:
-https://godoc.org/github.com/go-debos/debos/actions
+https://godoc.org/github.com/lynxis/debos/actions
 
 ## Installation (Docker container)
 
@@ -55,14 +55,14 @@ Official debos container is available:
 docker pull godebos/debos
 ```
 
-See [docker/README.md](https://github.com/go-debos/debos/blob/master/docker/README.md) for usage.
+See [docker/README.md](https://github.com/lynxis/debos/blob/master/docker/README.md) for usage.
 
 ## Installation (under Debian)
 
     sudo apt install golang git libglib2.0-dev libostree-dev qemu-system-x86 \
          qemu-user-static debootstrap systemd-container
     export GOPATH=/opt/src/gocode # or whatever suites your needs
-    go get -u github.com/go-debos/debos/cmd/debos
+    go get -u github.com/lynxis/debos/cmd/debos
     /opt/src/gocode/bin/debos --help
 
 ## Simple example
@@ -108,7 +108,7 @@ this:
 ## Other examples
 
 This example builds a customized image for a Raspberry Pi 3.
-https://github.com/go-debos/debos-recipes
+https://github.com/lynxis/debos-recipes
 
 ## Environment variables
 

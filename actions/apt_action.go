@@ -24,7 +24,7 @@ Optional properties:
 package actions
 
 import (
-	"github.com/go-debos/debos"
+	"github.com/lynxis/debos"
 )
 
 type AptAction struct {

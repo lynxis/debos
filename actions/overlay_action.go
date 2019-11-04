@@ -28,7 +28,7 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/go-debos/debos"
+	"github.com/lynxis/debos"
 )
 
 type OverlayAction struct {
