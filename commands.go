@@ -124,12 +124,14 @@ func (cmd *Command) AddBindMount(source, target string) {
 
 func (cmd *Command) BindMounts() {
 	for _, mount := range cmd.bindMounts {
-		exec.Command("mount", "--bind", fmt.Sprintf("%s:%s/%s", mount.Source, cmd.Chroot, mount.Target)).Output()
+		fmt.Printf("Running mount --bind %s %s", mount.Source, fmt.Sprintf("%s/%s", cmd.Chroot, mount.Target))
+		exec.Command("mount", "--bind", mount.Source, fmt.Sprintf("%s/%s", cmd.Chroot, mount.Target)).Output()
 	}
 }
 
 func (cmd *Command) CleanBindMounts() {
 	for _, mount := range cmd.bindMounts {
+		fmt.Printf("Running umount %s", fmt.Sprintf("%s/%s", cmd.Chroot, mount.Target))
 		exec.Command("umount", fmt.Sprintf("%s/%s", cmd.Chroot, mount.Target)).Output()
 	}
 }
