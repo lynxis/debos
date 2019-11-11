@@ -188,7 +188,7 @@ func (cmd Command) Run(label string, cmdline ...string) error {
 		cmd.BindMounts()
 	}
 
-	fmt.Printf('Running "%s"', exe.Args)
+	fmt.Printf("Running '%s' '%s'", exe.Path, exe.Args)
 
 	err := exe.Run()
 	w.flush()
