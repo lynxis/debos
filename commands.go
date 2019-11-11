@@ -125,6 +125,7 @@ func (cmd *Command) AddBindMount(source, target string) {
 func (cmd *Command) BindMounts() {
 	for _, mount := range cmd.bindMounts {
 		fmt.Printf("Running mount --bind %s %s", mount.Source, fmt.Sprintf("%s/%s", cmd.Chroot, mount.Target))
+		os.Mkdir(cmd.Chroot, 0755)
 		exec.Command("mount", "--bind", mount.Source, fmt.Sprintf("%s/%s", cmd.Chroot, mount.Target)).Output()
 	}
 }
@@ -181,13 +182,19 @@ func (cmd Command) Run(label string, cmdline ...string) error {
 		services.Deny()
 		defer services.Allow()
 
+	}
+
+	if cmd.ChrootMethod == CHROOT_METHOD_CHROOT {
 		cmd.BindMounts()
 	}
 
 	err := exe.Run()
 	w.flush()
 	q.Cleanup()
-	cmd.CleanBindMounts()
+
+	if cmd.ChrootMethod == CHROOT_METHOD_CHROOT {
+		cmd.CleanBindMounts()
+	}
 
 	return err
 }
