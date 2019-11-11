@@ -122,15 +122,15 @@ func (cmd Command) Run(label string, cmdline ...string) error {
 	var options []string
 	switch cmd.ChrootMethod {
 	case CHROOT_METHOD_NONE:
-		log.Println("WARNING: LYNX: NONE")
+		log.Println("chroot method = None")
 		options = cmdline
 	case CHROOT_METHOD_CHROOT:
-		log.Println("WARNING: LYNX: CHROOT")
+		log.Println("chroot method = chroot")
 		options = append(options, "chroot")
 		options = append(options, cmd.Chroot)
 		options = append(options, cmdline...)
 	case CHROOT_METHOD_NSPAWN:
-		log.Println("WARNING: LYNX: NSPAWN")
+		log.Println("chroot method = nspawn")
 		options = append(options, "systemd-nspawn", "-q", "-D", cmd.Chroot)
 		for _, e := range cmd.extraEnv {
 			options = append(options, "--setenv", e)
