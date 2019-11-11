@@ -122,6 +122,18 @@ func (cmd *Command) AddBindMount(source, target string) {
 	cmd.bindMounts = append(cmd.bindMounts, mount)
 }
 
+func (cmd *Command) BindMounts() {
+	for _, mount := range cmd.bindMounts {
+		exec.Command("mount", "--bind", fmt.Sprintf("%s:%s/%s", mount.Source, cmd.Chroot, mount.Target)).Output()
+	}
+}
+
+func (cmd *Command) CleanBindMounts() {
+	for _, mount := range cmd.bindMounts {
+		exec.Command("umount", fmt.Sprintf("%s/%s", cmd.Chroot, mount.Target)).Output()
+	}
+}
+
 func (cmd Command) Run(label string, cmdline ...string) error {
 	q := newQemuHelper(cmd)
 	q.Setup()
@@ -136,7 +148,6 @@ func (cmd Command) Run(label string, cmdline ...string) error {
 		options = append(options, "chroot")
 		options = append(options, cmd.Chroot)
 		options = append(options, cmdline...)
-		// run binds
 	case CHROOT_METHOD_NSPAWN:
 		log.Println("chroot method = nspawn")
 		options = append(options, "systemd-nspawn", "-q", "-D", cmd.Chroot)
@@ -168,17 +179,13 @@ func (cmd Command) Run(label string, cmdline ...string) error {
 		services.Deny()
 		defer services.Allow()
 
-		for _, mount := range cmd.bindMounts {
-			exec.Command("mount", "--bind", fmt.Sprintf("%s:%s", mount.Source, mount.Target)).Output()
-		}
+		cmd.BindMounts()
 	}
 
 	err := exe.Run()
 	w.flush()
-	for _, mount := range cmd.bindMounts {
-		exec.Command("umount", fmt.Sprintf("%s:%s", mount.Target)).Output()
-	}
 	q.Cleanup()
+	cmd.CleanBindMounts()
 
 	return err
 }
