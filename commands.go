@@ -18,14 +18,19 @@ const (
 	CHROOT_METHOD_CHROOT        // use chroot to create the chroot environment
 )
 
+type BindMount struct {
+	Source string
+	Target string
+}
+
 type Command struct {
 	Architecture string            // Architecture of the chroot, nil if same as host
 	Dir          string            // Working dir to run command in
 	Chroot       string            // Run in the chroot at path
 	ChrootMethod ChrootEnterMethod // Method to enter the chroot
 
-	bindMounts []string /// Items to bind mount
-	extraEnv   []string // Extra environment variables to set
+	bindMounts []BindMount // Items to bind mount
+	extraEnv   []string  // Extra environment variables to set
 }
 
 type commandWrapper struct {
@@ -105,12 +110,14 @@ func (cmd *Command) AddEnvKey(key, value string) {
 }
 
 func (cmd *Command) AddBindMount(source, target string) {
-	var mount string
-	if target != "" {
-		mount = fmt.Sprintf("%s:%s", source, target)
+	var mount BindMount
+
+	if target == "" {
+		mount.Target = source
 	} else {
-		mount = source
+		mount.Target = target
 	}
+	mount.Source = source
 
 	cmd.bindMounts = append(cmd.bindMounts, mount)
 }
@@ -129,6 +136,7 @@ func (cmd Command) Run(label string, cmdline ...string) error {
 		options = append(options, "chroot")
 		options = append(options, cmd.Chroot)
 		options = append(options, cmdline...)
+		// run binds
 	case CHROOT_METHOD_NSPAWN:
 		log.Println("chroot method = nspawn")
 		options = append(options, "systemd-nspawn", "-q", "-D", cmd.Chroot)
@@ -137,7 +145,7 @@ func (cmd Command) Run(label string, cmdline ...string) error {
 
 		}
 		for _, b := range cmd.bindMounts {
-			options = append(options, "--bind", b)
+			options = append(options, "--bind", fmt.Sprintf("%s:%s", b.Source, b.Target))
 
 		}
 		options = append(options, cmdline...)
@@ -159,10 +167,17 @@ func (cmd Command) Run(label string, cmdline ...string) error {
 		services := ServiceHelper{cmd.Chroot}
 		services.Deny()
 		defer services.Allow()
+
+		for _, mount := range cmd.bindMounts {
+			exec.Command("mount", "--bind", fmt.Sprintf("%s:%s", mount.Source, mount.Target)).Output()
+		}
 	}
 
 	err := exe.Run()
 	w.flush()
+	for _, mount := range cmd.bindMounts {
+		exec.Command("umount", fmt.Sprintf("%s:%s", mount.Target)).Output()
+	}
 	q.Cleanup()
 
 	return err
